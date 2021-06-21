@@ -1,0 +1,29 @@
+{
+  "name": "streams-kata",
+  "version": "1.0.0",
+  "description": "Programming Kata made of 3 exercises about streams",
+  "main": "index.js",
+  "scripts": {
+    "lint": "eslint . --ignore-path .gitignore",
+    "unit": "tap -b ./01-count-bytes/count-bytes.test.js",
+    "test": "npm run lint && npm run unit"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Lucascanna/streams-kata.git"
+  },
+  "author": "Luca Scannapieco",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Lucascanna/streams-kata/issues"
+  },
+  "homepage": "https://github.com/Lucascanna/streams-kata#readme",
+  "devDependencies": {
+    "@mia-platform/eslint-config-mia": "^3.0.0",
+    "eslint": "^7.29.0",
+    "tap": "^15.0.9"
+  },
+  "eslintConfig": {
+    "extends": "@mia-platform/eslint-config-mia"
+  }
+}
