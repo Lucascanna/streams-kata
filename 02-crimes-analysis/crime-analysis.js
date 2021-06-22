@@ -4,5 +4,12 @@ const fs = require('fs')
 
 module.exports = function processFile(filePath) {
   const outputFilePath = `${filePath}.analysis.csv`
-  fs.writeFileSync(outputFilePath, '')
+  const inputFileStream = fs.createReadStream(filePath)
+  const outputFileStream = fs.createWriteStream(outputFilePath)
+  inputFileStream.on('data', chunk => {
+    outputFileStream.write(chunk)
+  })
+  return new Promise((resolve) => {
+    inputFileStream.on('end', () => resolve())
+  })
 }
