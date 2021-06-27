@@ -54,5 +54,17 @@ tap.test('process london crimes', mainTest => {
     fs.unlinkSync(expectedOutputFilePath)
     test.end()
   })
+  mainTest.test('second last line should contain the most 3 dangerous areas', async test => {
+    await processFile(FILE_PATH)
+    const expectedOutputFilePath = `${FILE_PATH}.analysis.csv`
+    const [thirdLastLine] = fs.readFileSync(expectedOutputFilePath)
+      .toString()
+      .split('\n')
+      .slice(-2, -1)
+    const expectedRow = 'Hounslow,Wandsworth,Bromley'
+    test.strictSame(thirdLastLine, expectedRow)
+    fs.unlinkSync(expectedOutputFilePath)
+    test.end()
+  })
   mainTest.end()
 })

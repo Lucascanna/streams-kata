@@ -9,6 +9,7 @@ const SEPARATOR = ','
 
 module.exports = function processFile(filePath) {
   const crimesPerYear = {}
+  const crimesPerArea = {}
   return new Promise((resolve) => {
     const outputFilePath = `${filePath}.analysis.csv`
     const inputFileStream = fs.createReadStream(filePath)
@@ -25,7 +26,7 @@ module.exports = function processFile(filePath) {
       }
       const [
         lsoaCode,
-        borough,
+        area,
         majorCategory,
         minorCategory,
         value,
@@ -33,14 +34,16 @@ module.exports = function processFile(filePath) {
         month,
       ] = line.split(SEPARATOR)
       updateCrimesPerYear(year, value, crimesPerYear)
+      updateCrimesPerArea(area, value, crimesPerArea)
       if (year === SELECTED_YEAR) {
         outputFileStream.write(`${line}\n`)
       }
     })
     linesStream.on('close', () => {
       const thirdLastLine = computeCrimesIncrementLine(crimesPerYear)
+      const secondLastLine = computeMost3DangerousAreaLine(crimesPerArea)
       outputFileStream.write(`${thirdLastLine}\n`)
-      outputFileStream.write('aaaaaaaaa\n')
+      outputFileStream.write(`${secondLastLine}\n`)
       outputFileStream.write('aaaaaaaaa', () => {
         resolve()
       })
@@ -56,6 +59,14 @@ function updateCrimesPerYear(year, value, crimesPerYear) {
   }
 }
 
+function updateCrimesPerArea(area, value, crimesPerArea) {
+  if (!crimesPerArea[area]) {
+    crimesPerArea[area] = Number.parseInt(value)
+  } else {
+    crimesPerArea[area] += Number.parseInt(value)
+  }
+}
+
 function computeCrimesIncrementLine(crimesPerYear) {
   return Object.keys(crimesPerYear)
     .sort()
@@ -67,4 +78,11 @@ function computeCrimesIncrementLine(crimesPerYear) {
       const incrementString = `${year}:${increment}`
       return `${acc},${incrementString}`
     }, '')
+}
+
+function computeMost3DangerousAreaLine(crimesPerArea) {
+  return Object.keys(crimesPerArea)
+    .sort((first, second) => crimesPerArea[second] - crimesPerArea[first])
+    .slice(0, 3)
+    .join(',')
 }
