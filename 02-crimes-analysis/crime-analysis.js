@@ -33,8 +33,8 @@ module.exports = function processFile(filePath) {
         year,
         month,
       ] = line.split(SEPARATOR)
-      updateCrimesPerYear(year, value, crimesPerYear)
-      updateCrimesPerArea(area, value, crimesPerArea)
+      updateCrimesStatistic(year, value, crimesPerYear)
+      updateCrimesStatistic(area, value, crimesPerArea)
       if (year === SELECTED_YEAR) {
         outputFileStream.write(`${line}\n`)
       }
@@ -51,19 +51,11 @@ module.exports = function processFile(filePath) {
   })
 }
 
-function updateCrimesPerYear(year, value, crimesPerYear) {
-  if (!crimesPerYear[year]) {
-    crimesPerYear[year] = Number.parseInt(value)
+function updateCrimesStatistic(year, value, crimesStatistic) {
+  if (!crimesStatistic[year]) {
+    crimesStatistic[year] = Number.parseInt(value)
   } else {
-    crimesPerYear[year] += Number.parseInt(value)
-  }
-}
-
-function updateCrimesPerArea(area, value, crimesPerArea) {
-  if (!crimesPerArea[area]) {
-    crimesPerArea[area] = Number.parseInt(value)
-  } else {
-    crimesPerArea[area] += Number.parseInt(value)
+    crimesStatistic[year] += Number.parseInt(value)
   }
 }
 
