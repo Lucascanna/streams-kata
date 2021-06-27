@@ -8,6 +8,7 @@ const SELECTED_YEAR = '2016'
 const SEPARATOR = ','
 
 module.exports = function processFile(filePath) {
+  const crimesPerYear = {}
   return new Promise((resolve) => {
     const outputFilePath = `${filePath}.analysis.csv`
     const inputFileStream = fs.createReadStream(filePath)
@@ -31,14 +32,29 @@ module.exports = function processFile(filePath) {
         year,
         month,
       ] = line.split(SEPARATOR)
+      if (!crimesPerYear[year]) {
+        crimesPerYear[year] = Number.parseInt(value)
+      } else {
+        crimesPerYear[year] += Number.parseInt(value)
+      }
       if (year === SELECTED_YEAR) {
         outputFileStream.write(`${line}\n`)
       }
     })
     linesStream.on('close', () => {
-      outputFileStream.write('aaaaaaaaa\n', () => {
+      const thirdLastLine = Object.keys(crimesPerYear)
+        .sort()
+        .reduce((acc, year, index, array) => {
+          if (index === 0) {
+            return `${year}:${crimesPerYear[year]}`
+          }
+          const increment = crimesPerYear[year] - crimesPerYear[array[index - 1]]
+          const incrementString = `${year}:${increment}`
+          return `${acc},${incrementString}`
+        }, '')
+      outputFileStream.write(`${thirdLastLine}\n`, () => {
         outputFileStream.write('aaaaaaaaa\n', () => {
-          outputFileStream.write('aaaaaaaaa\n', () => {
+          outputFileStream.write('aaaaaaaaa', () => {
             resolve()
           })
         })
