@@ -29,16 +29,16 @@ tap.test('process london crimes', mainTest => {
   mainTest.test("output file should only contain 2016's rows", async test => {
     await processFile(FILE_PATH)
     const expectedOutputFilePath = `${FILE_PATH}.analysis.csv`
-    // eslint-disable-next-line no-unused-vars
-    const [_, secondRow, thirdRow, fourthRow] = fs.readFileSync(expectedOutputFilePath)
+    const filteredRows = fs.readFileSync(expectedOutputFilePath)
       .toString()
       .split('\n')
+      .slice(1, -4)
     const expectedRows = [
       'E01001116,Croydon,Burglary,Burglary in Other Buildings,0,2016,11',
       'E01001646,Greenwich,Violence Against the Person,Other violence,0,2016,11',
       'E01003496,Newham,Criminal Damage,Criminal Damage To Other Building,0,2016,9',
     ]
-    test.strictSame([secondRow, thirdRow, fourthRow], expectedRows)
+    test.strictSame(filteredRows, expectedRows)
     fs.unlinkSync(expectedOutputFilePath)
     test.end()
   })

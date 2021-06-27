@@ -8,34 +8,41 @@ const SELECTED_YEAR = '2016'
 const SEPARATOR = ','
 
 module.exports = function processFile(filePath) {
-  const outputFilePath = `${filePath}.analysis.csv`
-  const inputFileStream = fs.createReadStream(filePath)
-  const outputFileStream = fs.createWriteStream(outputFilePath)
-  const linesStream = readline.createInterface({
-    input: inputFileStream,
-    output: outputFileStream,
-  })
-  let isHeaderWritten = false
-  linesStream.on('line', line => {
-    if (!isHeaderWritten) {
-      outputFileStream.write(`${line}\n`)
-      isHeaderWritten = true
-      return
-    }
-    const [
-      lsoaCode,
-      borough,
-      majorCategory,
-      minorCategory,
-      value,
-      year,
-      month,
-    ] = line.split(SEPARATOR)
-    if (year === SELECTED_YEAR) {
-      outputFileStream.write(`${line}\n`)
-    }
-  })
   return new Promise((resolve) => {
-    inputFileStream.on('end', () => resolve())
+    const outputFilePath = `${filePath}.analysis.csv`
+    const inputFileStream = fs.createReadStream(filePath)
+    const outputFileStream = fs.createWriteStream(outputFilePath)
+    const linesStream = readline.createInterface({
+      input: inputFileStream,
+    })
+    let isHeaderWritten = false
+    linesStream.on('line', line => {
+      if (!isHeaderWritten) {
+        outputFileStream.write(`${line}\n`)
+        isHeaderWritten = true
+        return
+      }
+      const [
+        lsoaCode,
+        borough,
+        majorCategory,
+        minorCategory,
+        value,
+        year,
+        month,
+      ] = line.split(SEPARATOR)
+      if (year === SELECTED_YEAR) {
+        outputFileStream.write(`${line}\n`)
+      }
+    })
+    linesStream.on('close', () => {
+      outputFileStream.write('aaaaaaaaa\n', () => {
+        outputFileStream.write('aaaaaaaaa\n', () => {
+          outputFileStream.write('aaaaaaaaa\n', () => {
+            resolve()
+          })
+        })
+      })
+    })
   })
 }
