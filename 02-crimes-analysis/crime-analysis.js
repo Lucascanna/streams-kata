@@ -4,6 +4,9 @@
 const fs = require('fs')
 const readline = require('readline')
 
+const SELECTED_YEAR = '2016'
+const SEPARATOR = ','
+
 module.exports = function processFile(filePath) {
   const outputFilePath = `${filePath}.analysis.csv`
   const inputFileStream = fs.createReadStream(filePath)
@@ -12,7 +15,13 @@ module.exports = function processFile(filePath) {
     input: inputFileStream,
     output: outputFileStream,
   })
+  let isHeaderWritten = false
   linesStream.on('line', line => {
+    if (!isHeaderWritten) {
+      outputFileStream.write(`${line}\n`)
+      isHeaderWritten = true
+      return
+    }
     const [
       lsoaCode,
       borough,
@@ -21,8 +30,8 @@ module.exports = function processFile(filePath) {
       value,
       year,
       month,
-    ] = line.split(',')
-    if (year === '2016' || year === 'year') {
+    ] = line.split(SEPARATOR)
+    if (year === SELECTED_YEAR) {
       outputFileStream.write(`${line}\n`)
     }
   })
