@@ -26,13 +26,12 @@ module.exports = function processFile(filePath) {
         return
       }
       const [
-        lsoaCode,
+        ,
         area,
         majorCategory,
-        minorCategory,
+        ,
         value,
         year,
-        month,
       ] = line.split(SEPARATOR)
       updateCrimesStatistic(year, value, crimesPerYear)
       updateCrimesStatistic(area, value, crimesPerArea)
