@@ -32,33 +32,39 @@ module.exports = function processFile(filePath) {
         year,
         month,
       ] = line.split(SEPARATOR)
-      if (!crimesPerYear[year]) {
-        crimesPerYear[year] = Number.parseInt(value)
-      } else {
-        crimesPerYear[year] += Number.parseInt(value)
-      }
+      updateCrimesPerYear(year, value, crimesPerYear)
       if (year === SELECTED_YEAR) {
         outputFileStream.write(`${line}\n`)
       }
     })
     linesStream.on('close', () => {
-      const thirdLastLine = Object.keys(crimesPerYear)
-        .sort()
-        .reduce((acc, year, index, array) => {
-          if (index === 0) {
-            return `${year}:${crimesPerYear[year]}`
-          }
-          const increment = crimesPerYear[year] - crimesPerYear[array[index - 1]]
-          const incrementString = `${year}:${increment}`
-          return `${acc},${incrementString}`
-        }, '')
-      outputFileStream.write(`${thirdLastLine}\n`, () => {
-        outputFileStream.write('aaaaaaaaa\n', () => {
-          outputFileStream.write('aaaaaaaaa', () => {
-            resolve()
-          })
-        })
+      const thirdLastLine = computeCrimesIncrementLine(crimesPerYear)
+      outputFileStream.write(`${thirdLastLine}\n`)
+      outputFileStream.write('aaaaaaaaa\n')
+      outputFileStream.write('aaaaaaaaa', () => {
+        resolve()
       })
     })
   })
+}
+
+function updateCrimesPerYear(year, value, crimesPerYear) {
+  if (!crimesPerYear[year]) {
+    crimesPerYear[year] = Number.parseInt(value)
+  } else {
+    crimesPerYear[year] += Number.parseInt(value)
+  }
+}
+
+function computeCrimesIncrementLine(crimesPerYear) {
+  return Object.keys(crimesPerYear)
+    .sort()
+    .reduce((acc, year, index, array) => {
+      if (index === 0) {
+        return `${year}:${crimesPerYear[year]}`
+      }
+      const increment = crimesPerYear[year] - crimesPerYear[array[index - 1]]
+      const incrementString = `${year}:${increment}`
+      return `${acc},${incrementString}`
+    }, '')
 }
