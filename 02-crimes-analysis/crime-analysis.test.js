@@ -57,12 +57,24 @@ tap.test('process london crimes', mainTest => {
   mainTest.test('second last line should contain the most 3 dangerous areas', async test => {
     await processFile(FILE_PATH)
     const expectedOutputFilePath = `${FILE_PATH}.analysis.csv`
-    const [thirdLastLine] = fs.readFileSync(expectedOutputFilePath)
+    const [secondLastLine] = fs.readFileSync(expectedOutputFilePath)
       .toString()
       .split('\n')
       .slice(-2, -1)
     const expectedRow = 'Hounslow,Wandsworth,Bromley'
-    test.strictSame(thirdLastLine, expectedRow)
+    test.strictSame(secondLastLine, expectedRow)
+    fs.unlinkSync(expectedOutputFilePath)
+    test.end()
+  })
+  mainTest.test('last line should contain the most common category for each area', async test => {
+    await processFile(FILE_PATH)
+    const expectedOutputFilePath = `${FILE_PATH}.analysis.csv`
+    const [lastLine] = fs.readFileSync(expectedOutputFilePath)
+      .toString()
+      .split('\n')
+      .slice(-1)
+    const expectedRow = 'Croydon:Burglary,Greenwich:Violence Against the Person,Bromley:Violence Against the Person,Redbridge:Burglary,Wandsworth:Robbery,Ealing:Theft and Handling,Hounslow:Robbery,Newham:Criminal Damage'
+    test.strictSame(lastLine, expectedRow)
     fs.unlinkSync(expectedOutputFilePath)
     test.end()
   })

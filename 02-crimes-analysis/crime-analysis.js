@@ -10,6 +10,7 @@ const SEPARATOR = ','
 module.exports = function processFile(filePath) {
   const crimesPerYear = {}
   const crimesPerArea = {}
+  const crimesPerAreaPerMajorCategory = {}
   return new Promise((resolve) => {
     const outputFilePath = `${filePath}.analysis.csv`
     const inputFileStream = fs.createReadStream(filePath)
@@ -35,6 +36,7 @@ module.exports = function processFile(filePath) {
       ] = line.split(SEPARATOR)
       updateCrimesStatistic(year, value, crimesPerYear)
       updateCrimesStatistic(area, value, crimesPerArea)
+      updateCrimesStatisticNested(area, majorCategory, value, crimesPerAreaPerMajorCategory)
       if (year === SELECTED_YEAR) {
         outputFileStream.write(`${line}\n`)
       }
@@ -42,20 +44,33 @@ module.exports = function processFile(filePath) {
     linesStream.on('close', () => {
       const thirdLastLine = computeCrimesIncrementLine(crimesPerYear)
       const secondLastLine = computeMost3DangerousAreaLine(crimesPerArea)
+      const lastLine = computeCommonCategoriesLine(crimesPerAreaPerMajorCategory)
       outputFileStream.write(`${thirdLastLine}\n`)
       outputFileStream.write(`${secondLastLine}\n`)
-      outputFileStream.write('aaaaaaaaa', () => {
+      outputFileStream.write(lastLine, () => {
         resolve()
       })
     })
   })
 }
 
-function updateCrimesStatistic(year, value, crimesStatistic) {
-  if (!crimesStatistic[year]) {
-    crimesStatistic[year] = Number.parseInt(value)
+function updateCrimesStatistic(key, value, crimesStatistic) {
+  if (!crimesStatistic[key]) {
+    crimesStatistic[key] = Number.parseInt(value)
   } else {
-    crimesStatistic[year] += Number.parseInt(value)
+    crimesStatistic[key] += Number.parseInt(value)
+  }
+}
+
+function updateCrimesStatisticNested(key1, key2, value, crimesStatistic) {
+  if (!crimesStatistic[key1]) {
+    crimesStatistic[key1] = {
+      [key2]: Number.parseInt(value),
+    }
+  } else if (!crimesStatistic[key1][key2]) {
+    crimesStatistic[key1][key2] = Number.parseInt(value)
+  } else {
+    crimesStatistic[key1][key2] += Number.parseInt(value)
   }
 }
 
@@ -77,4 +92,25 @@ function computeMost3DangerousAreaLine(crimesPerArea) {
     .sort((first, second) => crimesPerArea[second] - crimesPerArea[first])
     .slice(0, 3)
     .join(',')
+}
+
+function computeCommonCategoriesLine(crimesPerAreaPerMajorCategory) {
+  return Object.keys(crimesPerAreaPerMajorCategory)
+    .reduce((finalStr, area, index) => {
+      const mostCommonCatogory = Object.keys(crimesPerAreaPerMajorCategory[area])
+        .reduce((mostCommonCategory, currentCategory) => {
+          if (!mostCommonCategory) {
+            return currentCategory
+          }
+          const currentMax = crimesPerAreaPerMajorCategory[area][mostCommonCategory]
+          if (crimesPerAreaPerMajorCategory[area][currentCategory] > currentMax) {
+            return currentCategory
+          }
+          return mostCommonCategory
+        }, '')
+      if (index === 0) {
+        return `${area}:${mostCommonCatogory}`
+      }
+      return `${finalStr},${area}:${mostCommonCatogory}`
+    }, '')
 }
