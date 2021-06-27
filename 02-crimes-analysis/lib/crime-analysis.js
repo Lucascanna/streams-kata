@@ -1,4 +1,3 @@
-/* eslint-disable no-unused-vars */
 'use strict'
 
 const fs = require('fs')
@@ -12,7 +11,11 @@ module.exports = function processFile(filePath) {
   const crimesPerArea = {}
   const crimesPerAreaPerMajorCategory = {}
   return new Promise((resolve) => {
-    const outputFilePath = `${filePath}.analysis.csv`
+    const filePathWithoutExtension = filePath
+      .split('.')
+      .slice(0, -1)
+      .join('.')
+    const outputFilePath = `${filePathWithoutExtension}.analysis.csv`
     const inputFileStream = fs.createReadStream(filePath)
     const outputFileStream = fs.createWriteStream(outputFilePath)
     const linesStream = readline.createInterface({

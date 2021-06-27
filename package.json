@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "lint": "eslint . --ignore-path .gitignore",
-    "unit": "tap -b ./01-count-bytes/count-bytes.test.js ./02-crimes-analysis/crime-analysis.test.js",
+    "unit": "tap -b ./01-count-bytes/lib/count-bytes.test.js ./02-crimes-analysis/lib/crime-analysis.test.js",
     "test": "npm run lint && npm run unit"
   },
   "repository": {

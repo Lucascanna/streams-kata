@@ -6,13 +6,13 @@ const fs = require('fs')
 const processFile = require('./crime-analysis')
 
 const FILE_PATH = './02-crimes-analysis/data/london_crime_short.csv'
+const OUTPUT_FILE_PATH = './02-crimes-analysis/data/london_crime_short.analysis.csv'
 
 tap.test('process london crimes', mainTest => {
   mainTest.test('should write a file <input_file>.analysis.csv in the file system', async test => {
     await processFile(FILE_PATH)
-    const expectedOutputFilePath = `${FILE_PATH}.analysis.csv`
-    test.ok(fs.existsSync(expectedOutputFilePath))
-    fs.unlinkSync(expectedOutputFilePath)
+    test.ok(fs.existsSync(OUTPUT_FILE_PATH))
+    fs.unlinkSync(OUTPUT_FILE_PATH)
     test.end()
   })
   mainTest.test('output file should contain the header as first row', async test => {
@@ -28,8 +28,7 @@ tap.test('process london crimes', mainTest => {
   })
   mainTest.test("output file should only contain 2016's rows", async test => {
     await processFile(FILE_PATH)
-    const expectedOutputFilePath = `${FILE_PATH}.analysis.csv`
-    const filteredRows = fs.readFileSync(expectedOutputFilePath)
+    const filteredRows = fs.readFileSync(OUTPUT_FILE_PATH)
       .toString()
       .split('\n')
       .slice(1, -3)
@@ -39,43 +38,40 @@ tap.test('process london crimes', mainTest => {
       'E01003496,Newham,Criminal Damage,Criminal Damage To Other Building,0,2016,9',
     ]
     test.strictSame(filteredRows, expectedRows)
-    fs.unlinkSync(expectedOutputFilePath)
+    fs.unlinkSync(OUTPUT_FILE_PATH)
     test.end()
   })
   mainTest.test('third last line should contain increment or decrement of crimes wrt previous year', async test => {
     await processFile(FILE_PATH)
-    const expectedOutputFilePath = `${FILE_PATH}.analysis.csv`
-    const [thirdLastLine] = fs.readFileSync(expectedOutputFilePath)
+    const [thirdLastLine] = fs.readFileSync(OUTPUT_FILE_PATH)
       .toString()
       .split('\n')
       .slice(-3, -2)
     const expectedRow = '2012:1,2013:3,2014:-1,2015:-2,2016:-1'
     test.strictSame(thirdLastLine, expectedRow)
-    fs.unlinkSync(expectedOutputFilePath)
+    fs.unlinkSync(OUTPUT_FILE_PATH)
     test.end()
   })
   mainTest.test('second last line should contain the most 3 dangerous areas', async test => {
     await processFile(FILE_PATH)
-    const expectedOutputFilePath = `${FILE_PATH}.analysis.csv`
-    const [secondLastLine] = fs.readFileSync(expectedOutputFilePath)
+    const [secondLastLine] = fs.readFileSync(OUTPUT_FILE_PATH)
       .toString()
       .split('\n')
       .slice(-2, -1)
     const expectedRow = 'Hounslow,Wandsworth,Bromley'
     test.strictSame(secondLastLine, expectedRow)
-    fs.unlinkSync(expectedOutputFilePath)
+    fs.unlinkSync(OUTPUT_FILE_PATH)
     test.end()
   })
   mainTest.test('last line should contain the most common category for each area', async test => {
     await processFile(FILE_PATH)
-    const expectedOutputFilePath = `${FILE_PATH}.analysis.csv`
-    const [lastLine] = fs.readFileSync(expectedOutputFilePath)
+    const [lastLine] = fs.readFileSync(OUTPUT_FILE_PATH)
       .toString()
       .split('\n')
       .slice(-1)
     const expectedRow = 'Croydon:Burglary,Greenwich:Violence Against the Person,Bromley:Violence Against the Person,Redbridge:Burglary,Wandsworth:Robbery,Ealing:Theft and Handling,Hounslow:Robbery,Newham:Criminal Damage'
     test.strictSame(lastLine, expectedRow)
-    fs.unlinkSync(expectedOutputFilePath)
+    fs.unlinkSync(OUTPUT_FILE_PATH)
     test.end()
   })
   mainTest.end()
