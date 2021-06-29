@@ -6,7 +6,12 @@ const readline = require('readline')
 const SELECTED_YEAR = '2016'
 const SEPARATOR = ','
 
-module.exports = async function processFile(filePath) {
+module.exports = {
+  processFile,
+  processStream,
+}
+
+async function processFile(filePath) {
   const filePathWithoutExtension = filePath
     .split('.')
     .slice(0, -1)

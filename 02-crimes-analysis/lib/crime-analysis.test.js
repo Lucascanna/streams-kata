@@ -3,7 +3,7 @@
 
 const tap = require('tap')
 const fs = require('fs')
-const processFile = require('./crime-analysis')
+const { processFile } = require('./crime-analysis')
 
 const FILE_PATH = './02-crimes-analysis/data/london_crime_short.csv'
 const OUTPUT_FILE_PATH = './02-crimes-analysis/data/london_crime_short.analysis.csv'

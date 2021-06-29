@@ -5,7 +5,10 @@
   "main": "index.js",
   "scripts": {
     "lint": "eslint . --ignore-path .gitignore",
-    "unit": "tap -b ./01-count-bytes/lib/count-bytes.test.js ./02-crimes-analysis/lib/crime-analysis.test.js",
+    "test01": "tap -b ./01-count-bytes/lib/count-bytes.test.js",
+    "test02": "tap -b ./02-crimes-analysis/lib/crime-analysis.test.js",
+    "test03": "tap -b ./03-http-crimes-analysis/lib/http-crime-analysis.test.js",
+    "unit": "tap -b ./01-count-bytes/lib/count-bytes.test.js ./02-crimes-analysis/lib/crime-analysis.test.js ./03-http-crimes-analysis/lib/http-crime-analysis.test.js",
     "test": "npm run lint && npm run unit"
   },
   "repository": {
@@ -25,5 +28,9 @@
   },
   "eslintConfig": {
     "extends": "@mia-platform/eslint-config-mia"
+  },
+  "dependencies": {
+    "fastify": "^3.18.0",
+    "pino-pretty": "^5.1.0"
   }
 }
