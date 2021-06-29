@@ -6,25 +6,29 @@ const readline = require('readline')
 const SELECTED_YEAR = '2016'
 const SEPARATOR = ','
 
-module.exports = function processFile(filePath) {
+module.exports = async function processFile(filePath) {
+  const filePathWithoutExtension = filePath
+    .split('.')
+    .slice(0, -1)
+    .join('.')
+  const outputFilePath = `${filePathWithoutExtension}.analysis.csv`
+  const inputFileStream = fs.createReadStream(filePath)
+  const outputFileStream = fs.createWriteStream(outputFilePath)
+  await processStream(inputFileStream, outputFileStream)
+}
+
+function processStream(inputStream, outputStream) {
   const crimesPerYear = {}
   const crimesPerArea = {}
   const crimesPerAreaPerMajorCategory = {}
   return new Promise((resolve) => {
-    const filePathWithoutExtension = filePath
-      .split('.')
-      .slice(0, -1)
-      .join('.')
-    const outputFilePath = `${filePathWithoutExtension}.analysis.csv`
-    const inputFileStream = fs.createReadStream(filePath)
-    const outputFileStream = fs.createWriteStream(outputFilePath)
     const linesStream = readline.createInterface({
-      input: inputFileStream,
+      input: inputStream,
     })
     let isHeaderWritten = false
     linesStream.on('line', line => {
       if (!isHeaderWritten) {
-        outputFileStream.write(`${line}\n`)
+        outputStream.write(`${line}\n`)
         isHeaderWritten = true
         return
       }
@@ -40,16 +44,16 @@ module.exports = function processFile(filePath) {
       updateCrimesStatistic(area, value, crimesPerArea)
       updateCrimesStatisticNested(area, majorCategory, value, crimesPerAreaPerMajorCategory)
       if (year === SELECTED_YEAR) {
-        outputFileStream.write(`${line}\n`)
+        outputStream.write(`${line}\n`)
       }
     })
     linesStream.on('close', () => {
       const thirdLastLine = computeCrimesIncrementLine(crimesPerYear)
       const secondLastLine = computeMost3DangerousAreaLine(crimesPerArea)
       const lastLine = computeCommonCategoriesLine(crimesPerAreaPerMajorCategory)
-      outputFileStream.write(`${thirdLastLine}\n`)
-      outputFileStream.write(`${secondLastLine}\n`)
-      outputFileStream.write(lastLine, () => {
+      outputStream.write(`${thirdLastLine}\n`)
+      outputStream.write(`${secondLastLine}\n`)
+      outputStream.write(lastLine, () => {
         resolve()
       })
     })

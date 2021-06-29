@@ -17,13 +17,12 @@ tap.test('process london crimes', mainTest => {
   })
   mainTest.test('output file should contain the header as first row', async test => {
     await processFile(FILE_PATH)
-    const expectedOutputFilePath = `${FILE_PATH}.analysis.csv`
-    const [firstRow] = fs.readFileSync(expectedOutputFilePath)
+    const [firstRow] = fs.readFileSync(OUTPUT_FILE_PATH)
       .toString()
       .split('\n')
     const expectedHeader = 'lsoa_code,borough,major_category,minor_category,value,year,month'
     test.strictSame(firstRow, expectedHeader)
-    fs.unlinkSync(expectedOutputFilePath)
+    fs.unlinkSync(OUTPUT_FILE_PATH)
     test.end()
   })
   mainTest.test("output file should only contain 2016's rows", async test => {
