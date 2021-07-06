@@ -66,3 +66,27 @@ To run your script with a large file, you can also run
 ```
 node ./02-crimes-analysis/index.js ./london_crime_by_lsoa.csv
 ```
+
+## Exercise 3
+
+Write the Fastify handler of an HTTP POST route that takes as input a `text/plain` body with the same content of the input file in exercise 2 and returns as HTTP response body the same content of the output file in exercise 2.
+
+You can reuse the code of Exercise 2.
+
+<div class="panel panel-warning">
+TIP
+{: .panel-heading}
+<div class="panel-body">
+Remember that with `request.raw` and `reply.raw` you can access the Node.js Request and Reply which are input and output streams, respectively.
+</div>
+</div>
+
+Write your code in the file `./03-http-crimes-analysis/lib/http-crime-analysis.js`.
+
+Then, executes the command `npm run test03` to check if your  implementation is correct.
+
+To run your script with a large file, you can also run
+```
+node ./03-http-crimes-analysis/index.js
+```
+and then execute the POST request to your locally running server.
