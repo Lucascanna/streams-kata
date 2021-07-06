@@ -1,4 +1,4 @@
-# streams-kata
+# Streams Kata
 
 Programming Kata made of 3 exercises about streams.
 
