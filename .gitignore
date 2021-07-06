@@ -1,5 +1,7 @@
-london_crime.csv
-london_crime.analysis.csv
+# Large files
+london_crime_by_lsoa.csv
+london_crime_by_lsoa.analysis.csv
+
 # Logs
 logs
 *.log
