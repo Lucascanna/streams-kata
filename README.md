@@ -73,13 +73,8 @@ Write the Fastify handler of an HTTP POST route that takes as input a `text/plai
 
 You can reuse the code of Exercise 2.
 
-<div class="panel panel-warning">
-TIP
-{: .panel-heading}
-<div class="panel-body">
+**TIP**  
 Remember that with `request.raw` and `reply.raw` you can access the Node.js Request and Reply which are input and output streams, respectively.
-</div>
-</div>
 
 Write your code in the file `./03-http-crimes-analysis/lib/http-crime-analysis.js`.
 
