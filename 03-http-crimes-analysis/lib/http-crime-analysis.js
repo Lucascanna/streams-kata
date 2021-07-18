@@ -12,10 +12,10 @@ function build(opts = {}) {
   return app
 }
 
-async function handler(request, reply) {
+function handler(request, reply) {
   reply.raw.writeHead(200, { 'Content-Type': 'text/csv' })
-  await processStream(request.raw, reply.raw)
-  reply.raw.end()
+  processStream(request.raw, reply.raw)
+    .then(() => reply.raw.end())
 }
 
 module.exports = build
