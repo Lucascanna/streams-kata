@@ -14,7 +14,7 @@ const outputData = fs.readFileSync('./03-http-crimes-analysis/data/london_crime_
 tap.test('process london crimes via http', mainTest => {
   mainTest.test('server sholud respond with analysis csv', async test => {
     const response = await app.inject({
-      method: 'GET',
+      method: 'POST',
       url: '/',
       payload: inputData,
     })

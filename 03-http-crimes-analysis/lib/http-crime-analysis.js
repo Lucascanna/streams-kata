@@ -5,7 +5,10 @@ const { processStream } = require('../../02-crimes-analysis/lib/crime-analysis')
 
 function build(opts = {}) {
   const app = fastify(opts)
-  app.get('/', handler)
+  app.addContentTypeParser('*', function contentTypeParser(request, payload, done) {
+    done()
+  })
+  app.post('/', handler)
   return app
 }
 
